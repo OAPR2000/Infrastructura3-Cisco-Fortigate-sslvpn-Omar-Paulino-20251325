@@ -32,8 +32,6 @@ En el video muestro:
 9. [Servidor Web](#9-servidor-web)
 10. [Usuario y cliente SSL-VPN](#10-usuario-y-cliente-ssl-vpn)
 11. [Verificación del funcionamiento](#11-verificación-del-funcionamiento)
-12. [Problemas que encontré y cómo los resolví](#12-problemas-que-encontré-y-cómo-los-resolví)
-
 ---
 
 ## 1. Propósito de la práctica
