@@ -1,0 +1,41 @@
+! IOSvL2-2 - Sitio 1: VLAN 10 (Usuarios) + VLAN 99 nativa (gestion del FW1)
+enable
+configure terminal
+hostname SW1-1325
+no ip domain-lookup
+!
+vlan 10
+ name USUARIOS
+vlan 99
+ name GESTION
+exit
+!
+interface GigabitEthernet0/0
+ description Troncal hacia FW1 port2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,99
+ switchport nonegotiate
+ no shutdown
+!
+interface GigabitEthernet0/1
+ description Usuario
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast edge
+ no shutdown
+!
+interface GigabitEthernet0/2
+ description webterm-1 (gestion)
+ switchport mode access
+ switchport access vlan 99
+ spanning-tree portfast edge
+ no shutdown
+end
+write memory
+!
+! Verificacion
+show vlan brief
+show interfaces trunk
+show running-config

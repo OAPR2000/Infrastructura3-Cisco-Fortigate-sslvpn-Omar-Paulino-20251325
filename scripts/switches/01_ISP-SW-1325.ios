@@ -1,0 +1,29 @@
+! IOSvL2-1 - Switch que simula el ISP (une NAT1 con la WAN de los dos FortiGate)
+! Pegar en la consola del switch.
+enable
+configure terminal
+hostname ISP-SW-1325
+no ip domain-lookup
+!
+interface GigabitEthernet0/0
+ description Hacia NAT1 (Internet)
+ switchport mode access
+ no shutdown
+!
+interface GigabitEthernet0/1
+ description Hacia FW1 port1 (WAN)
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+interface GigabitEthernet0/2
+ description Hacia FW2 port1 (WAN)
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+end
+write memory
+!
+! Verificacion
+show interfaces status
+show running-config

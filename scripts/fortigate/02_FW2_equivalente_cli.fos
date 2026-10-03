@@ -1,0 +1,88 @@
+# FMW2-1325 - Equivalente en CLI de lo que configure por GUI en esta practica.
+# (Referencia: yo lo hice todo por GUI. Las contrasenas van en texto aqui
+#  porque es un laboratorio; FortiOS las guarda cifradas.)
+
+# 1) Publicar el servidor web (VIP con port forwarding 443)
+config firewall vip
+    edit "VIP-WEB-HTTPS"
+        set extip 200.25.13.25
+        set mappedip "10.13.25.130"
+        set extintf "port1"
+        set portforward enable
+        set extport 443
+        set mappedport 443
+    next
+end
+
+# 2) Pool de IP para los clientes de la SSL-VPN
+config firewall address
+    edit "VPN-POOL-1325"
+        set type iprange
+        set start-ip 10.25.13.10
+        set end-ip 10.25.13.20
+    next
+end
+
+# 3) Usuario y grupo de la VPN
+config user local
+    edit "omar-vpn"
+        set type password
+        set passwd Vpn2025-1325
+    next
+end
+config user group
+    edit "GRUPO-VPN-1325"
+        set member "omar-vpn"
+    next
+end
+
+# 4) Portal SSL-VPN (modo tunel, split tunneling por defecto)
+config vpn ssl web portal
+    edit "PORTAL-1325"
+        set tunnel-mode enable
+        set ip-pools "VPN-POOL-1325"
+    next
+end
+
+# 5) Ajustes de la SSL-VPN (puerto 10443 = valor por defecto)
+config vpn ssl settings
+    set servercert "Fortinet_Factory"
+    set tunnel-ip-pools "VPN-POOL-1325"
+    set source-interface "port1"
+    set source-address "all"
+    set default-portal "PORTAL-1325"
+    set port 10443
+    config authentication-rule
+        edit 1
+            set groups "GRUPO-VPN-1325"
+            set portal "PORTAL-1325"
+        next
+    end
+end
+
+# 6) Politicas
+config firewall policy
+    edit 2
+        set name "WEB-PUBLICO-HTTPS"
+        set srcintf "port1"
+        set dstintf "port2"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "VIP-WEB-HTTPS"
+        set schedule "always"
+        set service "HTTPS"
+        set logtraffic all
+    next
+    edit 3
+        set name "SSLVPN-A-SERVIDOR"
+        set srcintf "ssl.root"
+        set dstintf "port2"
+        set action accept
+        set srcaddr "VPN-POOL-1325"
+        set dstaddr "LAN-SERVIDOR"
+        set schedule "always"
+        set service "HTTPS" "PING" "SSH" "TRACEROUTE"
+        set logtraffic all
+        set groups "GRUPO-VPN-1325"
+    next
+end

@@ -1,0 +1,42 @@
+! R1-1325 - Configuracion completa desde cero para esta practica
+enable
+configure terminal
+hostname R1-1325
+no ip domain-lookup
+!
+interface FastEthernet0/0
+ description WAN hacia ISP (IOSvL2-1)
+ ip address 200.25.13.13 255.255.255.224
+ ip address 192.168.42.13 255.255.255.0 secondary
+ ip nat outside
+ no shutdown
+!
+interface FastEthernet0/1
+ description LAN troncal hacia IOSvL2-2
+ no ip address
+ no shutdown
+!
+interface FastEthernet0/1.10
+ description VLAN10 USUARIOS
+ encapsulation dot1Q 10
+ ip address 10.13.25.1 255.255.255.128
+ ip nat inside
+exit
+!
+ip dhcp excluded-address 10.13.25.1 10.13.25.9
+ip dhcp excluded-address 10.13.25.101 10.13.25.127
+ip dhcp pool VLAN10-USUARIOS
+ network 10.13.25.0 255.255.255.128
+ default-router 10.13.25.1
+ dns-server 8.8.8.8 1.1.1.1
+exit
+!
+ip route 0.0.0.0 0.0.0.0 192.168.42.1
+!
+ip access-list extended NAT-USUARIOS
+ permit ip 10.13.25.0 0.0.0.127 any
+exit
+ip nat pool SALIDA-INTERNET 192.168.42.13 192.168.42.13 netmask 255.255.255.0
+ip nat inside source list NAT-USUARIOS pool SALIDA-INTERNET overload
+end
+write memory

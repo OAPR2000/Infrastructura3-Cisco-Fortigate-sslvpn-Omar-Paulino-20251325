@@ -1,0 +1,129 @@
+! =====================================================================
+!  R1-1325 - show running-config (Cisco c2691, IOS 12.4(25d) C2691-ADVSECURITYK9-M)
+!  Practica: VPN de acceso remoto SSL-VPN (FortiGate)
+!  Autor: Omar Paulino - Matricula 20251325
+!  Configurado por CLI desde la consola de GNS3.
+!  En esta practica el router ya no tiene VPN: solo da red, DHCP y NAT
+!  a la VLAN 10 del Usuario.
+! =====================================================================
+!
+Building configuration...
+
+Current configuration : 1973 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R1-1325
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+ip auth-proxy max-nodata-conns 3
+ip admission max-nodata-conns 3
+no ip dhcp use vrf connected
+ip dhcp excluded-address 10.13.25.1 10.13.25.9
+ip dhcp excluded-address 10.13.25.101 10.13.25.127
+!
+ip dhcp pool VLAN10-USUARIOS
+   network 10.13.25.0 255.255.255.128
+   default-router 10.13.25.1
+   dns-server 8.8.8.8 1.1.1.1
+!
+!
+no ip domain lookup
+!
+!
+!
+!
+!
+!
+ip tcp synwait-time 5
+!
+!
+!
+!
+interface FastEthernet0/0
+ description WAN hacia ISP (IOSvL2-1)
+ ip address 192.168.42.13 255.255.255.0 secondary
+ ip address 200.25.13.13 255.255.255.224
+ ip nat outside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface Serial0/0
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface FastEthernet0/1
+ description LAN troncal hacia IOSvL2-2
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1.10
+ description VLAN10 USUARIOS
+ encapsulation dot1Q 10
+ ip address 10.13.25.1 255.255.255.128
+ ip nat inside
+ ip virtual-reassembly
+!
+interface Serial0/1
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/2
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 192.168.42.1
+!
+no ip http server
+no ip http secure-server
+ip nat pool SALIDA-INTERNET 192.168.42.13 192.168.42.13 netmask 255.255.255.0
+ip nat inside source list NAT-USUARIOS pool SALIDA-INTERNET overload
+!
+ip access-list extended NAT-USUARIOS
+ permit ip 10.13.25.0 0.0.0.127 any
+!
+no cdp log mismatch duplex
+!
+!
+control-plane
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login
+!
+!
+end

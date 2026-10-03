@@ -1,0 +1,9 @@
+# FMW2-1325 - Unico paso hecho por CLI (consola de GNS3).
+config system interface
+    edit "port2"
+        set mode static
+        set ip 192.168.25.1 255.255.255.0
+        set allowaccess ping https http
+    next
+end
+# A partir de aqui todo se hizo por GUI en http://192.168.25.1

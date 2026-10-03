@@ -1,0 +1,22 @@
+! R1-1325 - Quitar la VPN sitio a sitio de la Infraestructura 2
+! (en esta practica el router solo da red, DHCP y NAT)
+configure terminal
+interface FastEthernet0/0
+ no crypto map CMAP-1325
+ exit
+no crypto map CMAP-1325 10
+no crypto ipsec transform-set TS-1325
+no crypto isakmp key Vpn#20251325 address 200.25.13.25
+no crypto isakmp policy 10
+no crypto isakmp keepalive
+no ip access-list extended VPN-TRAFICO
+!
+! Quitar la excepcion de NAT hacia el servidor: ahora todo el trafico
+! de los usuarios hacia afuera se traduce (incluida la conexion SSL-VPN)
+ip access-list extended NAT-USUARIOS
+ no deny ip 10.13.25.0 0.0.0.127 10.13.25.128 0.0.0.15
+ exit
+end
+clear crypto sa
+clear crypto isakmp
+write memory

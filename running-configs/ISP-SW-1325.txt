@@ -1,0 +1,64 @@
+! =====================================================================
+!  ISP-SW-1325 - show running-config (Cisco IOSvL2, IOS 15.2)
+!  Practica: VPN de acceso remoto SSL-VPN (FortiGate)
+!  Autor: Omar Paulino - Matricula 20251325
+!  Configurado por CLI desde la consola de GNS3.
+!  Nota: las VLAN se guardan en vlan.dat, no en el running-config;
+!  se verifican con "show vlan brief".
+! =====================================================================
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname ISP-SW-1325
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+!
+no ip domain-lookup
+ip cef
+no ipv6 cef
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+interface GigabitEthernet0/0
+ description Hacia NAT1 (Internet)
+ switchport mode access
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ description Hacia FW1 port1 (WAN)
+ switchport mode access
+ negotiation auto
+ spanning-tree portfast edge
+!
+interface GigabitEthernet0/2
+ description Hacia FW2 port1 (WAN)
+ switchport mode access
+ negotiation auto
+ spanning-tree portfast edge
+!
+interface GigabitEthernet0/3
+ negotiation auto
+!
+ip forward-protocol nd
+!
+ip http server
+ip http secure-server
+!
+control-plane
+!
+line con 0
+line aux 0
+line vty 0 4
+ login
+!
+end

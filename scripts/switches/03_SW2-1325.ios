@@ -1,0 +1,29 @@
+! IOSvL2-3 - Sitio 2: sin VLAN (todo en VLAN 1)
+enable
+configure terminal
+hostname SW2-1325
+no ip domain-lookup
+!
+interface GigabitEthernet0/0
+ description Hacia FW2 port2
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+interface GigabitEthernet0/1
+ description WebServer
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+!
+interface GigabitEthernet0/2
+ description webterm-2 (gestion)
+ switchport mode access
+ spanning-tree portfast edge
+ no shutdown
+end
+write memory
+!
+! Verificacion
+show interfaces status
+show running-config

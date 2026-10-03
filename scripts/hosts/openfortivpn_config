@@ -1,0 +1,10 @@
+### configuration file for openfortivpn, see man openfortivpn(1) ###
+
+host = 200.25.13.25
+port = 10443
+username = omar-vpn
+password = Vpn2025-1325
+trusted-cert = 286efc05555bc05560acbbb14928b35b93b7da0e6a47e1a6701bc983704f1190
+insecure-ssl = 1
+min-tls = 1.0
+cipher-list = DEFAULT:@SECLEVEL=0

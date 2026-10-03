@@ -1,0 +1,12 @@
+show system interface port1
+show system interface port2
+show router static
+show firewall address
+show firewall vip
+show user local
+show user group
+show vpn ssl web portal PORTAL-1325
+show vpn ssl settings
+show firewall policy
+# Usuarios conectados a la SSL-VPN
+get vpn ssl monitor

@@ -1,0 +1,13 @@
+# /etc/netplan/50-cloud-init.yaml - WEBSERVER-1325 (Ubuntu Cloud 24.04)
+network:
+  version: 2
+  ethernets:
+    ens3:
+      dhcp4: false
+      addresses: [10.13.25.130/28]
+      mtu: 1400
+      routes:
+        - to: default
+          via: 10.13.25.129
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
