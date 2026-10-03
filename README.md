@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/32986977/README.md)
 # Infraestructura 3: VPN de acceso remoto (SSL-VPN) con FortiGate
 
 **Autor:** Omar Paulino
