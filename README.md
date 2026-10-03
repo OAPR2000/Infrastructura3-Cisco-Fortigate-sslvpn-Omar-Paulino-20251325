@@ -8,7 +8,7 @@
 
 ## Video de demostración
 
-**[Ver el video de la práctica](PEGAR_AQUI_EL_LINK_DEL_VIDEO)**
+https://youtu.be/XMXFRB_LSAM?si=qNiALX3KupV_ovs0
 
 En el video muestro:
 
@@ -722,21 +722,3 @@ curl -k https://200.25.13.25
 | --- | --- |
 | `ssh omar@10.13.25.130` | Connection timed out: desaparecen `ppp0` y su ruta |
 | `curl -k https://200.25.13.25` | Sigue funcionando: la web no depende de la VPN |
-
----
-
-## 12. Problemas que encontré y cómo los resolví
-
-| Problema | Causa | Solución |
-| --- | --- | --- |
-| El FortiGate no dejaba borrar el túnel IPsec ni sus objetos | Estaban en uso por políticas y rutas | Borré en orden: políticas → rutas → túnel → grupos → direcciones (sección 8.1) |
-| El webterm del Sitio 2 no abría | El contenedor no arrancó bien por falta de RAM | Lo borré y lo creé de nuevo con su *Edit config* |
-| No existía el portal `web-access` para *All Other Users/Groups* | Este FortiGate no tenía los portales de fábrica | Elegí `PORTAL-1325` también como portal por defecto |
-| `apt install openfortivpn` falló con `No space left on device` | Disco de 2.4 GB al 98% y un kernel nuevo pendiente de instalar | Limpié journal y caché de apt y purgué el kernel `6.8.0-142` (sección 10.2) |
-| `tlsv1 alert protocol version` al conectar | El FortiGate de evaluación solo ofrece TLS antiguo y Ubuntu 24.04 lo rechaza | `--insecure-ssl --min-tls=1.0 --cipher-list=DEFAULT:@SECLEVEL=0` |
-| `Gateway certificate validation failed` | El certificado del FortiGate es autofirmado | Agregué su huella con `trusted-cert` |
-| openfortivpn se quedaba colgado o cortaba con `unexpected eof while reading` | RAM de la laptop al 99%: las VMs se congelaban | Cerré programas y apagué el webterm mientras no lo usaba |
-| Con la VPN corriendo no podía escribir más comandos en la consola | La consola de GNS3 es una sola consola serie y openfortivpn queda en primer plano | Usé Ctrl+Z y `bg` para pasarlo a segundo plano, o una segunda sesión |
-| El traceroute normal a la IP pública solo mostraba `* * *` | El traceroute de Linux usa UDP y el FortiGate no responde esos paquetes en su WAN | Usé `sudo traceroute -I` (ICMP) |
-| `sudo sshd -T` mostró `Missing privilege separation directory: /run/sshd` | En Ubuntu 24.04 SSH arranca por activación de socket y ese directorio solo existe mientras el servicio está corriendo | No es un fallo; la configuración se comprobó leyendo el archivo y entrando por SSH |
-| `curl` necesita `-k` | Certificados autofirmados en Apache | Normal en laboratorio; en producción usaría un certificado de una CA de confianza |
